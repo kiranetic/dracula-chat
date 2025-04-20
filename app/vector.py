@@ -1,10 +1,10 @@
+import uuid
 from qdrant_client import QdrantClient
 from qdrant_client.models import Distance, VectorParams, PointStruct
 from sentence_transformers import SentenceTransformer
-import uuid
 
 from app.faq import faq_data
-from app.config import QDRANT_URL, QDRANT_API_KEY, COLLECTION_NAME
+from app.config import QDRANT_URL, QDRANT_API_KEY, COLLECTION_NAME, EMBEDDING_MODEL
 
 
 client = QdrantClient(
@@ -12,7 +12,9 @@ client = QdrantClient(
     api_key=QDRANT_API_KEY,
 )
 
-model = SentenceTransformer("all-MiniLM-L6-v2")
+model = SentenceTransformer(EMBEDDING_MODEL)
+print(f"📦 Loaded embedding model: {EMBEDDING_MODEL}")
+
 
 # ---- Create Collection ----
 def create_collection():
@@ -58,5 +60,9 @@ def search_faq(user_input, threshold=0.4):
     )
 
     if hits:
-        return hits[0].payload["answer"]
-    return "Sorry, I didn't understand that. Can you please rephrase."
+        answer = hits[0].payload["answer"]
+        score = hits[0].score
+        return answer, score
+
+    return "__fallback__", None
+
