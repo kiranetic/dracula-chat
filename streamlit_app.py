@@ -85,7 +85,6 @@ def render_logs_tab():
 
 
 def render_readme_tab():
-    st.header("📄 Project README")
     try:
         with open(README_FILE, "r") as f:
             readme = f.read()
@@ -98,7 +97,7 @@ def render_readme_tab():
 def main():
     st.set_page_config(page_title="Dracula Chat", layout="wide", page_icon=":robot:")
     st.title("🧛 Dracula Chat UI")
-    st.write("AI-powered chatbot")
+    st.write("AI-Driven FAQ Chat Assistant")
 
     init_state()
 
